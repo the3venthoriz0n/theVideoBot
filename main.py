@@ -4,10 +4,17 @@ import requests
 import re
 import shutil
 from moviepy.editor import *
-#wow this is really neat guys
+
+
+
 # Set your API keys
-OPENAI_API_KEY = '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'
-PEXELS_API_KEY = 'ehyGJkwi8gUUjseQb1Hf5KpcugxylcoAp9L2eyR3gTRjtzxSL2e6KzPl'
+with open('api_key.txt', 'r') as f:
+    OPENAI_API_KEY = f.readline().strip()
+    PEXELS_API_KEY = f.readline().strip()
+
+#test
+print (OPENAI_API_KEY)
+print (PEXELS_API_KEY)
 
 # Configure the OpenAI API client
 openai.api_key = OPENAI_API_KEY
