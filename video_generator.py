@@ -10,10 +10,6 @@ with open('api_key.txt', 'r') as f:
     OPENAI_API_KEY = f.readline().strip()
     PEXELS_API_KEY = f.readline().strip()
 
-# test
-print(OPENAI_API_KEY)
-print(PEXELS_API_KEY)
-
 # Configure the OpenAI API client
 openai.api_key = OPENAI_API_KEY
 
@@ -133,7 +129,7 @@ def create_video(prompt):
             captions.append(caption)
             total_duration += caption_duration
 
-        final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(1280, 720)).set_duration(total_duration)
+        final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
         final_video_with_captions.write_videofile("final_video.mp4", codec="libx264", audio_codec="aac")
 
         print("Video creation complete! Check the final_video.mp4 file.")
