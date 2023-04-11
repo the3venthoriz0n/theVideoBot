@@ -121,13 +121,13 @@ def create_video(prompt):
             caption_duration = .3
             start_time = total_duration
             end_time = start_time + caption_duration
-            caption = TextClip(phrase, fontsize=60, color='white', align='center')
+            caption = TextClip(phrase, fontsize=60, color='white', align='center', bg_color="rgba(0, 0, 0, 0)")
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
             captions.append(caption)
             total_duration += caption_duration
 
         clip_duration = total_duration / len(video_clips)
-        resized_video_clips = [clip.subclip(0, clip_duration) for clip in video_clips]
+        resized_video_clips = [clip.fx(vfx.resize, height=1280) for clip in video_clips] # Resize the video_clips
         final_video = concatenate_videoclips(resized_video_clips, method="compose")
 
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
