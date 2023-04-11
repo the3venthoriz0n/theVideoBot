@@ -112,9 +112,6 @@ def create_video(prompt):
             video_clips.append(clip)
 
     if video_clips:
-        final_video = concatenate_videoclips(video_clips, method="compose")
-        final_video = final_video.subclip(0, min(15, final_video.duration))
-
         words = script.split()
         short_phrases = [word.rstrip() for word in words]
 
@@ -128,6 +125,10 @@ def create_video(prompt):
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
             captions.append(caption)
             total_duration += caption_duration
+
+        clip_duration = total_duration / len(video_clips)
+        resized_video_clips = [clip.subclip(0, clip_duration) for clip in video_clips]
+        final_video = concatenate_videoclips(resized_video_clips, method="compose")
 
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
         final_video_with_captions.write_videofile("final_video.mp4", codec="libx264", audio_codec="aac")
