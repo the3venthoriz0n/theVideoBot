@@ -5,7 +5,7 @@ import re
 import shutil
 import textwrap
 from moviepy.editor import *
-
+#it is 12:44PM LATEST VERSION
 # Set your API keys, make a file called api_key.txt and paste api keys
 with open('api_key.txt', 'r') as f:
     OPENAI_API_KEY = f.readline().strip()
@@ -44,7 +44,7 @@ def generate_video_script(prompt):
         return video_script_cache[prompt]
 
     modified_prompt = (
-        f"Please generate a concise, entertaining and informative video script (60 seconds or less) about '{prompt}'. "
+        f"Please generate an entertaining and informative short form video script (the video needs to render out to less than 60 seconds) about '{prompt}'. "
         f"Then, provide a list of 5 vague nouns that will return me with good stock b roll footage "
         f"Separate the script and the keywords with a line break.\n\n"
         f"Script:\n"
