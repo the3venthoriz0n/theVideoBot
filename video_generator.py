@@ -26,12 +26,6 @@ openai.api_key = OPENAI_API_KEY
 # Cache for video scripts
 video_script_cache = {}
 
-def get_stock_video(keyword):
-    video_url = get_stock_video_pexels(keyword)
-    if video_url is None:
-        video_url = get_stock_video_pixabay(keyword)
-    return video_url
-
 def get_stock_video_pexels(keyword):
     pexels_url = "https://api.pexels.com/videos/search"
     headers = {"Authorization": PEXELS_API_KEY}
@@ -43,8 +37,10 @@ def get_stock_video_pexels(keyword):
     if data and "videos" in data and data["videos"]:
         video = random.choice(data["videos"])
         video_url = video["video_files"][0]["link"]
+        print(f"Pexels: Found video for keyword '{keyword}'")
         return video_url
 
+    print(f"Pexels: No video found for keyword '{keyword}'")
     return None
 
 def get_stock_video_pixabay(keyword):
@@ -61,9 +57,18 @@ def get_stock_video_pixabay(keyword):
     if data and "hits" in data and data["hits"]:
         video = random.choice(data["hits"])
         video_url = video["videos"]["medium"]["url"]
+        print(f"Pixabay: Found video for keyword '{keyword}'")
         return video_url
 
+    print(f"Pixabay: No video found for keyword '{keyword}'")
     return None
+
+def get_stock_video(keyword):
+    video_url = get_stock_video_pexels(keyword)
+    if video_url is None:
+        print(f"Switching to Pixabay for keyword '{keyword}'")
+        video_url = get_stock_video_pixabay(keyword)
+    return video_url
 
 def test_pexels_search(keywords):
     for keyword in keywords:
@@ -194,7 +199,7 @@ def create_video(prompt):
             start_time = total_duration
             end_time = start_time + caption_duration
 
-            caption = TextClip(caption_text, fontsize=60, color='rgb(237, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.55)', font="Nunito-ExtraBold.ttf")
+            caption = TextClip(caption_text, fontsize=60, color='rgb(235, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.45)', font="Nunito-ExtraBold.ttf")
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
 
             captions.append(caption)
@@ -244,7 +249,7 @@ def create_video(prompt):
 
             new_audioclip = CompositeAudioClip([audioclip])
             videoclip.audio = new_audioclip
-            videoclip = videoclip.volumex(.25)  # Volume factor, 20 percent volume
+            videoclip = videoclip.volumex(.2)  # Volume factor, 20 percent volume
             videoclip.write_videofile((upper_camel_case(project_prompt)+".mp4"))
 
             print("Audio is complete!")
