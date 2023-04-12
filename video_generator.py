@@ -3,13 +3,13 @@ import openai
 import requests
 import re
 import shutil
+import textwrap
 from moviepy.editor import *
 
 # Set your API keys, make a file called api_key.txt and paste api keys
 with open('api_key.txt', 'r') as f:
     OPENAI_API_KEY = f.readline().strip()
     PEXELS_API_KEY = f.readline().strip()
-    PIXABAY_API_KEY = f.readline().strip()
 
 # Configure the OpenAI API client
 openai.api_key = OPENAI_API_KEY
@@ -20,7 +20,7 @@ video_script_cache = {}
 def get_stock_video(keyword):
     pexels_url = "https://api.pexels.com/videos/search"
     headers = {"Authorization": PEXELS_API_KEY}
-    params = {"query": keyword, "per_page": 1}
+    params = {"query": keyword, "per_page": 5}
 
     response = requests.get(pexels_url, headers=headers, params=params)
     data = response.json()
@@ -55,7 +55,7 @@ def generate_video_script(prompt):
         max_tokens=800,
         n=1,
         stop=None,
-        temperature=0.4,
+        temperature=0.6,
     )
 
     response_text = response.choices[0].text.strip()
@@ -113,16 +113,18 @@ def create_video(prompt):
             video_clips.append(clip)
 
     if video_clips:
-        words = script.split()
-        short_phrases = [word.rstrip() for word in words]
+        # Split the script into phrases, not words
+        phrases = re.split(r'(?<=\.)\s+|, |; |: |\? |\! |\(|\)', script)
+        short_phrases = [phrase.strip() for phrase in phrases if phrase.strip()]
 
         captions = []
         total_duration = 0
         for i, phrase in enumerate(short_phrases):
-            caption_duration = .3
+            # Adjust caption_duration based on the length of the phrase
+            caption_duration = 0.1 * len(phrase.split()) + 1
             start_time = total_duration
             end_time = start_time + caption_duration
-            caption = TextClip(phrase, fontsize=60, color='white', align='center', bg_color="rgba(0, 0, 0, 0)", font="Nunito-ExtraBold.ttf")
+            caption = TextClip(phrase, fontsize=60, color='white', align='center', bg_color="black", font="Nunito-ExtraBold.ttf")
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
             captions.append(caption)
             total_duration += caption_duration
