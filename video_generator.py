@@ -69,7 +69,7 @@ def generate_video_script(prompt):
     if last_line_break_index != -1:
         # Extract the script and keywords after the last line break
         video_script = response_text[:last_line_break_index].strip()
-        keywords = response_text[last_line_break_index:].strip().split(', ')
+        keywords = response_text[last_line_break_index:].strip().split(', ') #TODO fix the keyword generation, stack etc.
     else:
         video_script = response_text
         keywords = []
@@ -113,7 +113,7 @@ def create_video(prompt):
     print(f"Generated keywords:\n{', '.join(keywords)}")
 
     test_pexels_search(keywords)
-    video_folder = "generated_videos" #this is current save path
+    video_folder = "generated_videos" 
     if os.path.exists(video_folder):
         shutil.rmtree(video_folder)
     os.makedirs(video_folder)
@@ -183,10 +183,20 @@ def create_video(prompt):
 
             cropped_clip = clip.crop(x1=crop_x, y1=crop_y, x2=crop_x + new_width, y2=crop_y + new_height)
             return cropped_clip.fx(vfx.resize, width=size[0], height=size[1])
+        
+        def format_duration(duration):
+            hours = int(duration / 3600)
+            minutes = int((duration % 3600) / 60)
+            seconds = int(duration % 60)
+
+            return f"{hours:02}:{minutes:02}:{seconds:02}"
 
 
-        def add_audio(inClip):
+        def add_audio(videoclip):
+
+            audioLength = format_duration(total_duration) #format audio duration to H:M:S
             print("Adding audio to video...")
+        
             # Set the directory path
             dir_path = "The music/"
             # Get a list of all files in the directory
@@ -194,7 +204,7 @@ def create_video(prompt):
 
             if files: #if files exist
                 # loading audio file
-                audioclip = AudioFileClip(dir_path + files[0]).subclip(0, 5)
+                audioclip = AudioFileClip(dir_path + files[0]).set_duration(audioLength)
             else:
                 print("Directory is empty")
             
@@ -203,15 +213,16 @@ def create_video(prompt):
             #         print(file)
 
             # adding audio to the video clip
-            outWAudio= inClip.set_audio(audioclip)
-            print("Audio is complete!")
-            return outWAudio
+            new_audioclip = CompositeAudioClip([audioclip])
+            videoclip.audio = new_audioclip
+            videoclip.write_videofile((upper_camel_case(project_prompt)+".mp4"))
 
+            print("Audio is complete!")
+            return
 
         resized_video_clips = [resize_clip(clip).subclip(0, clip_duration) for clip in video_clips]
         final_video = concatenate_videoclips(resized_video_clips, method="compose")
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
-        final_video_with_captions.write_videofile((upper_camel_case(project_prompt)+".mp4"), codec="libx264", audio_codec="aac", audio=False)
         add_audio(final_video_with_captions) #add audio to video?
 
         print("Video creation complete!")
