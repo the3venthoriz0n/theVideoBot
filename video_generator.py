@@ -152,7 +152,6 @@ def create_video(prompt):
     for idx, sentence in enumerate(sentences):
         video_url = None
         while video_url is None and keywords:
-        while video_url is None and keywords:
             keyword = keywords.pop(0)
             attempts = 0
             while attempts < 10:
@@ -247,6 +246,10 @@ def create_video(prompt):
 
             new_audioclip = CompositeAudioClip([audioclip])
             videoclip.audio = new_audioclip
+
+            #newclip = volumex(clip, 2.0)  # doubles audio volume
+            #videoclip = videoclip.fx(volumex, 0.5)  # half audio, use with fx
+            videoclip = videoclip.volumex(.3)  # only if you used "moviepy.editor"
             videoclip.write_videofile((upper_camel_case(project_prompt)+".mp4"))
 
             print("Audio is complete!")
