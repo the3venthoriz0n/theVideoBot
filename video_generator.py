@@ -180,7 +180,7 @@ def create_video(prompt):
 
         
 
-        print("Video creation complete! Check the final_video.mp4 file.")
+        print("Video creation complete! Check the file in ." + video_folder)
     else:
         print("No valid video URLs found for any of the script sentences.")
 
