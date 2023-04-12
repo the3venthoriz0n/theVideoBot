@@ -194,7 +194,7 @@ def create_video(prompt):
             start_time = total_duration
             end_time = start_time + caption_duration
 
-            caption = TextClip(caption_text, fontsize=60, color='rgb(235, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.45)', font="Nunito-ExtraBold.ttf")
+            caption = TextClip(caption_text, fontsize=60, color='rgb(237, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.55)', font="Nunito-ExtraBold.ttf")
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
 
             captions.append(caption)
@@ -244,7 +244,7 @@ def create_video(prompt):
 
             new_audioclip = CompositeAudioClip([audioclip])
             videoclip.audio = new_audioclip
-            videoclip = videoclip.volumex(.2)  # Volume factor, 20 percent volume
+            videoclip = videoclip.volumex(.25)  # Volume factor, 20 percent volume
             videoclip.write_videofile((upper_camel_case(project_prompt)+".mp4"))
 
             print("Audio is complete!")
