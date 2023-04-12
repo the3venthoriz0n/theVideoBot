@@ -149,7 +149,7 @@ def create_video(prompt):
     video_clips = []
     used_video_urls = set()
 
-    for idx, sentence in enumerate(sentences):
+    for idx, sentence in enumerate(sentences):#hello
         video_url = None
         while video_url is None and keywords:
             keyword = keywords.pop(0)
