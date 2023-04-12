@@ -190,7 +190,10 @@ def create_video(prompt):
             phrases = [' '.join(words[i:i + max_words]) for i in range(0, len(words), max_words)]
             return phrases
 
-        max_words_per_caption = 3
+        max_words_per_caption = 6
+
+        wrapped_caption = textwrap.fill(caption, width=40)
+
         captions_text = split_into_phrases(script, max_words_per_caption)
         captions = []
         total_duration = 0
