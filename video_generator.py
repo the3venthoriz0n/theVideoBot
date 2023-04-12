@@ -249,7 +249,7 @@ def create_video(prompt):
 
             new_audioclip = CompositeAudioClip([audioclip])
             videoclip.audio = new_audioclip
-            videoclip = videoclip.volumex(.2)  # Volume factor, 20 percent volume
+            videoclip = videoclip.volumex(.25)  # Volume factor, 20 percent volume
             videoclip.write_videofile((upper_camel_case(project_prompt)+".mp4"))
 
             print("Audio is complete!")
