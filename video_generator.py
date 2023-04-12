@@ -226,8 +226,9 @@ def create_video(prompt):
             hours = int(duration / 3600)
             minutes = int((duration % 3600) / 60)
             seconds = int(duration % 60)
+            padding = int(1) + seconds
 
-            return f"{hours:02}:{minutes:02}:{seconds:02}"
+            return f"{hours:02}:{minutes:02}:{padding:02}"
 
 
         def add_audio(videoclip):
@@ -235,20 +236,15 @@ def create_video(prompt):
             audioLength = format_duration(total_duration) #format audio duration to H:M:S
             print("Adding audio to video...")
         
-            # Set the directory path
-            dir_path = "The music/"
-            # Get a list of all files in the directory
-            files = os.listdir(dir_path)
+            dir_path = "The music/" # Set the path for music
+            files = os.listdir(dir_path) # Get a list of all files in the directory
 
-            if files: #if files exist
+            if files: # If files exist
                 random_file = random.choice(files) # pick a random file in dir
                 audioclip = AudioFileClip(dir_path + random_file).set_duration(audioLength) # choose that file, set to length of video
             else:
                 print("Directory is empty")
 
-
-
-            # adding audio to the video clip
             new_audioclip = CompositeAudioClip([audioclip])
             videoclip.audio = new_audioclip
             videoclip.write_videofile((upper_camel_case(project_prompt)+".mp4"))
