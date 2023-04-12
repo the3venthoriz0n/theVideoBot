@@ -5,8 +5,7 @@ import re
 import shutil
 import textwrap
 from moviepy.editor import *
-
-
+#it is 12:44PM LATEST VERSION
 # Set your API keys, make a file called api_key.txt and paste api keys
 with open('api_key.txt', 'r') as f:
     OPENAI_API_KEY = f.readline().strip()
@@ -45,7 +44,7 @@ def generate_video_script(prompt):
         return video_script_cache[prompt]
 
     modified_prompt = (
-        f"Please generate an entertaining and informative short form video script (the video needs to render out to less than 60 seconds) about '{prompt}'. "
+        f"Please generate an entertaining and engaging short form video script (the video needs to render out to less than 60 seconds) about '{prompt}'. "
         f"Then, provide a list of 5 vague nouns that will return me with good stock b roll footage "
         f"Separate the script and the keywords with a line break.\n\n"
         f"Script:\n"
@@ -60,6 +59,18 @@ def generate_video_script(prompt):
     )
 
     response_text = response.choices[0].text.strip()
+
+    # Find the index of the last line break
+    last_line_break_index = response_text.rfind('\n')
+
+    if last_line_break_index != -1:
+        # Extract the script and keywords after the last line break
+        video_script = response_text[:last_line_break_index].strip()
+        keywords = response_text[last_line_break_index:].strip().split(', ')
+    else:
+        video_script = response_text
+        keywords = []
+
 
     # Find the index of the "Keywords:" heading
     keywords_index = response_text.find("Keywords:")
@@ -92,7 +103,7 @@ def create_video(prompt):
 
     for idx, sentence in enumerate(sentences):
         video_url = None
-        while keywords:
+        while video_url is None and keywords:
             keyword = keywords.pop(0)
             attempts = 0
             while attempts < 5:
@@ -114,18 +125,21 @@ def create_video(prompt):
             video_clips.append(clip)
 
     if video_clips:
-        # Split the script into phrases, not words
-        phrases = re.split(r'(?<=\.)\s+|, |; |: |\? |\! |\(|\)', script)
-        short_phrases = [phrase.strip() for phrase in phrases if phrase.strip()]
+        def split_into_phrases(text, max_words):
+            words = text.split()
+            phrases = [' '.join(words[i:i + max_words]) for i in range(0, len(words), max_words)]
+            return phrases
+
+        max_words_per_caption = 3
+        captions_text = split_into_phrases(script, max_words_per_caption)
 
         captions = []
         total_duration = 0
-        for i, phrase in enumerate(short_phrases):
-            # Adjust caption_duration based on the length of the phrase
-            caption_duration = 0.1 * len(phrase.split()) + 1
+        for i, caption_text in enumerate(captions_text):
+            caption_duration = 0.1 * len(caption_text.split()) + 1
             start_time = total_duration
             end_time = start_time + caption_duration
-            caption = TextClip(phrase, fontsize=60, color='white', align='center', bg_color="black", font="Nunito-ExtraBold.ttf")
+            caption = TextClip(caption_text, fontsize=60, color='white', align='center', bg_color="black", font="Nunito-ExtraBold.ttf")
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
             captions.append(caption)
             total_duration += caption_duration
