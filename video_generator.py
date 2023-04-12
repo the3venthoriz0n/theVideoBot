@@ -1,18 +1,11 @@
-import pyttsx3
-import random, pyttsx3, os, openai, requests, re, shutil, textwrap, subprocess
+import random
+import os, openai, requests, re, shutil, textwrap, subprocess
 from moviepy.editor import * # import everything from moviepy
 from moviepy.video.io.VideoFileClip import VideoFileClip
-from pydub import AudioSegment
-
-
-'''
-Welcome to our shitty project
-
-'''
-
 
 project_prompt = input("Enter your video prompt: ") #prompt users for input
 
+#--API---
 
 # Set your API keys, make a file called api_key.txt and paste api keys
 with open('api_key.txt', 'r') as f:
@@ -190,8 +183,6 @@ def create_video(prompt):
 
         max_words_per_caption = 3
         captions_text = split_into_phrases(script, max_words_per_caption)
-
-
         captions = []
         total_duration = 0
         for i, caption_text in enumerate(captions_text):
@@ -232,8 +223,9 @@ def create_video(prompt):
 
             return f"{hours:02}:{minutes:02}:{padding:02}"
 
+
         def add_audio(videoclip):
-  
+
             audioLength = format_duration(total_duration) #format audio duration to H:M:S
             print("Adding audio to video...")
         
@@ -246,24 +238,8 @@ def create_video(prompt):
             else:
                 print("Directory is empty")
 
-            # # TEXT TO SPEECH
-            # engine = pyttsx3.init()  # Initialize the text-to-speech engine
-            # engine.setProperty('rate', 150) # Set the speech rate
-
-            # # Convert a string to speech and save to an audio file
-            # text = "Hello, how are you?"
-            # engine.save_to_file(text, 't2s.mp3')
-
-            # # Load the audio files
-            # t2s = AudioSegment.from_file("t2s.mp3", format="mp3")
-            # music = AudioSegment.from_file(dir_path + random_file, format="mp3")
-
-            # engine.runAndWait()
-
-            # combined_audio = music + t2s
-
-            combined_audio = CompositeAudioClip([audioclip])
-            videoclip.audio = combined_audio
+            new_audioclip = CompositeAudioClip([audioclip])
+            videoclip.audio = new_audioclip
             videoclip = videoclip.volumex(.2)  # Volume factor, 20 percent volume
             videoclip.write_videofile((upper_camel_case(project_prompt)+".mp4"))
 
