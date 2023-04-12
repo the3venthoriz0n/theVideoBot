@@ -154,7 +154,7 @@ def create_video(prompt):
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
         final_video_with_captions.write_videofile("final_video.mp4", codec="libx264", audio_codec="aac", audio=False)
 
-        print("Video creation complete! Check the final_video.mp4 file.")
+        print("Video creation complete! Check the file in ." + video_folder)
     else:
         print("No valid video URLs found for any of the script sentences.")
 
