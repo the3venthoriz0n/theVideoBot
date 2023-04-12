@@ -1,3 +1,4 @@
+import pyttsx3
 import random, pyttsx3, os, openai, requests, re, shutil, textwrap, subprocess
 from moviepy.editor import * # import everything from moviepy
 from moviepy.video.io.VideoFileClip import VideoFileClip
@@ -5,7 +6,7 @@ from pydub import AudioSegment
 
 
 '''
-Welcome to our shitty project
+Welcome to our shitty project and always remember you can put a nice dress on an ugly bitch
 
 '''
 
@@ -80,8 +81,8 @@ def generate_video_script(prompt):
         return video_script_cache[prompt]
 
     modified_prompt = (
-        f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. End with a call to subscribe for more"
-        f"Then, Please provide a list of 5 versatile and captivating nouns that can be used to search for engaging stock videos across various topics. These nouns should be general enough to yield interesting results when used in a stock video API search, while still being visually appealing and relevant to a diverse range of subjects. Make sure to separate the nouns with ',' so that multiple nouns are not percieved as one."
+        f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. the last sentence should always be subscribe for more"
+        f"Then, Please provide a list of 5 versatile and captivating nouns that can be used to search for engaging stock videos across various topics. These nouns should be general enough to yield interesting results when used in a stock video API search, while still being visually appealing and relevant to a diverse range of subjects. Make sure to separate the nouns with spaces so that multiple nouns are not percieved as one."
         f"Separate the script and the keywords with a line break, do not add subscribe to the list of keywords.\n\n"
         f"Script:\n"
     )
@@ -145,7 +146,7 @@ def create_video(prompt):
     print(f"Generated script:\n{script}")
     print(f"Generated keywords:\n{', '.join(keywords)}")
 
-    # test_pexels_search(keywords)
+    test_pexels_search(keywords)
     video_folder = "generated_videos" 
     if os.path.exists(video_folder):
         shutil.rmtree(video_folder)
@@ -155,11 +156,10 @@ def create_video(prompt):
     video_clips = []
     used_video_urls = set()
 
-    keyword_index = 0
-    for idx, sentence in enumerate(sentences):
+    for idx, sentence in enumerate(sentences):#hello
         video_url = None
-        while video_url is None and keyword_index < len(keywords):
-            keyword = keywords[keyword_index]
+        while video_url is None and keywords:
+            keyword = keywords.pop(0)
             attempts = 0
             while attempts < 10:
                 candidate_video_url = get_stock_video(keyword)
@@ -169,12 +169,10 @@ def create_video(prompt):
                     break
                 attempts += 1
 
-            keyword_index += 1
-
             if video_url:
                 break
 
-        if video_url:
+        if video_url: #this code does not run?
             video_name = f"scene_{idx + 1}.mp4"
             save_path = os.path.join(video_folder, video_name)
             download_video_file(video_url, save_path)
