@@ -3,6 +3,7 @@ import openai
 import requests
 import re
 import shutil
+import textwrap
 from moviepy.editor import *
 
 # Set your API keys, make a file called api_key.txt and paste api keys
