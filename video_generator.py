@@ -201,7 +201,7 @@ def create_video(prompt):
             start_time = total_duration
             end_time = start_time + caption_duration
 
-            caption = TextClip(caption_text, fontsize=60, color='rgb(235, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.45)', font="Nunito-ExtraBold.ttf", size=(caption_width, None), method="caption")
+            caption = TextClip(caption_text, fontsize=69, color='rgb(237, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.55)', font="Nunito-ExtraBold.ttf", size=(caption_width, None), method="caption")
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
 
             captions.append(caption)
