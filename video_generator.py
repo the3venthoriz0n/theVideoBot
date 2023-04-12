@@ -4,15 +4,12 @@ import os, openai, requests, re, shutil, textwrap, subprocess
 import random, os, openai, requests, re, shutil, textwrap, subprocess
 from moviepy.editor import * # import everything from moviepy
 from moviepy.video.io.VideoFileClip import VideoFileClip
-from pydub import AudioSegment
-
+#from pydub import AudioSegment
 
 '''
 Welcome to our shitty project and always remember you can put a nice dress on an ugly bitch
 
 '''
-
-
 project_prompt = input("Enter your video prompt: ") #prompt users for input
 
 #--API---
