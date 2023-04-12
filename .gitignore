@@ -2,6 +2,7 @@ api_key*
 generated_videos*
 final_video*
 *.mp4
+vidbot*
 
 
 # VSCode
