@@ -44,8 +44,8 @@ def generate_video_script(prompt):
         return video_script_cache[prompt]
 
     modified_prompt = (
-        f"Please generate a concise video script (60 seconds or less) about '{prompt}'. "
-        f"Then, provide a list of 5 relevant nouns that will be easily searchable in a stock video API search. "
+        f"Please generate an entertaining and informative video script (60 seconds or less) about '{prompt}'. "
+        f"Then, provide a list of 5 general nouns that will return me with good stock b roll footage "
         f"Separate the script and the keywords with a line break.\n\n"
         f"Script:\n"
     )
