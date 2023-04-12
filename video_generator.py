@@ -160,8 +160,10 @@ def create_video(prompt):
             caption_duration = 0.1 * len(caption_text.split()) + 1
             start_time = total_duration
             end_time = start_time + caption_duration
-            caption = TextClip(caption_text, fontsize=60, color='Yellow', align='center', bg_color="gray", font="Nunito-ExtraBold.ttf")
+
+            caption = TextClip(caption_text, fontsize=60, color='Yellow', align='center', bg_color='rgba(0, 0, 0, 0.4)', font="Nunito-ExtraBold.ttf")
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
+
             captions.append(caption)
             total_duration += caption_duration
 
