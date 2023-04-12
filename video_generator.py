@@ -1,3 +1,4 @@
+import random
 import os, openai, requests, re, shutil, textwrap, subprocess
 from moviepy.editor import * # import everything from moviepy
 from moviepy.video.io.VideoFileClip import VideoFileClip
@@ -213,14 +214,12 @@ def create_video(prompt):
             files = os.listdir(dir_path)
 
             if files: #if files exist
-                # loading audio file
-                audioclip = AudioFileClip(dir_path + files[0]).set_duration(audioLength)
+                random_file = random.choice(files) # pick a random file in dir
+                audioclip = AudioFileClip(dir_path + random_file).set_duration(audioLength) # choose that file, set to length of video
             else:
                 print("Directory is empty")
-            
-            # for file in files: #list all FILES in directory
-            #     if os.path.isfile(os.path.join(dir_path, file)):
-            #         print(file)
+
+
 
             # adding audio to the video clip
             new_audioclip = CompositeAudioClip([audioclip])
@@ -233,7 +232,7 @@ def create_video(prompt):
         resized_video_clips = [resize_clip(clip).subclip(0, clip_duration) for clip in video_clips]
         final_video = concatenate_videoclips(resized_video_clips, method="compose")
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
-        add_audio(final_video_with_captions) #add audio to video?
+        add_audio(final_video_with_captions) #add audio to video
 
         print("Video creation complete!")
     else:
