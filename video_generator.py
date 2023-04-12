@@ -127,7 +127,18 @@ def create_video(prompt):
             total_duration += caption_duration
 
         clip_duration = total_duration / len(video_clips)
-        resized_video_clips = [clip.fx(vfx.resize, height=1280) for clip in video_clips] # Resize the video_clips
+        
+        def resize_clip(clip, size=(720, 1280)):
+            aspect_ratio = clip.size[0] / clip.size[1]
+            
+            if aspect_ratio > 1:  # landscape aspect ratio
+                ratio = size[1] / clip.size[1]
+            else:  # portrait aspect ratio
+                ratio = min(size[0] / clip.size[0], size[1] / clip.size[1])
+
+            return clip.fx(vfx.resize, ratio)
+
+        resized_video_clips = [resize_clip(clip).subclip(0, clip_duration) for clip in video_clips]
         final_video = concatenate_videoclips(resized_video_clips, method="compose")
 
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
