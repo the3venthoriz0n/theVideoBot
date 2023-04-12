@@ -4,3 +4,5 @@ moviepy
 SpeechRecognition
 nltk
 moviepy
+pyttsx3
+pydub
