@@ -19,7 +19,7 @@ video_script_cache = {}
 def get_stock_video(keyword):
     pexels_url = "https://api.pexels.com/videos/search"
     headers = {"Authorization": PEXELS_API_KEY}
-    params = {"query": keyword, "per_page": 1}
+    params = {"query": keyword, "per_page": 5}
 
     response = requests.get(pexels_url, headers=headers, params=params)
     data = response.json()
