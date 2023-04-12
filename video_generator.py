@@ -87,8 +87,8 @@ def generate_video_script(prompt):
 
     modified_prompt = (
         f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. the last words in the last sentence should always be 'subscribe for more'."
-        f"Then, Please provide a list of 5 versatile and captivating nouns that can be used to search for engaging stock videos across various topics. These nouns should be general enough to yield interesting results when used in a stock video API search, while still being visually appealing and relevant to a diverse range of subjects. Make sure to separate the nouns with ',' so that multiple nouns are not percieved as one."
-        f"Separate the script and the keywords with a line break, do not add subscribe to the list of keywords.\n\n"
+        f"Then, please ALWAYS provide a list of 5 versatile and captivating nouns that can be used to search for engaging stock videos across various topics. These nouns should be general enough to yield interesting results when used in a stock video API search, while still being visually appealing and relevant to a diverse range of subjects. Make sure to separate the nouns with ',' so that multiple nouns are not percieved as one."
+        f"Separate the script and the keywords with a line break always give the Keyword the title 'Keywords', do not add subscribe to the list of keywords.\n\n"
         f"Script:\n"
     )
     response = openai.Completion.create(
@@ -190,16 +190,19 @@ def create_video(prompt):
             phrases = [' '.join(words[i:i + max_words]) for i in range(0, len(words), max_words)]
             return phrases
 
-        max_words_per_caption = 3
+        max_words_per_caption = 4
         captions_text = split_into_phrases(script, max_words_per_caption)
         captions = []
         total_duration = 0
+        video_width = 720
+        caption_width = int(video_width * 0.9)  # Adjust this value to set the maximum width for the captions
+
         for i, caption_text in enumerate(captions_text):
             caption_duration = 0.1 * len(caption_text.split()) + .5
             start_time = total_duration
             end_time = start_time + caption_duration
 
-            caption = TextClip(caption_text, fontsize=60, color='rgb(235, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.45)', font="Nunito-ExtraBold.ttf")
+            caption = TextClip(caption_text, fontsize=60, color='rgb(235, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.45)', font="Nunito-ExtraBold.ttf", size=(caption_width, None), method="caption")
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
 
             captions.append(caption)
