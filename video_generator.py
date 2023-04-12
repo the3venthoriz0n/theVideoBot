@@ -86,7 +86,7 @@ def generate_video_script(prompt):
         return video_script_cache[prompt]
 
     modified_prompt = (
-        f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. the last words in the last sentence should always be 'subscribe for more' "
+        f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. the last words in the last sentence should always be 'subscribe for more'."
         f"Then, Please provide a list of 5 versatile and captivating nouns that can be used to search for engaging stock videos across various topics. These nouns should be general enough to yield interesting results when used in a stock video API search, while still being visually appealing and relevant to a diverse range of subjects. Make sure to separate the nouns with ',' so that multiple nouns are not percieved as one."
         f"Separate the script and the keywords with a line break, do not add subscribe to the list of keywords.\n\n"
         f"Script:\n"
