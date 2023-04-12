@@ -54,7 +54,7 @@ def generate_video_script(prompt):
         max_tokens=800,
         n=1,
         stop=None,
-        temperature=0.4,
+        temperature=0.6,
     )
 
     response_text = response.choices[0].text.strip()
@@ -112,13 +112,15 @@ def create_video(prompt):
             video_clips.append(clip)
 
     if video_clips:
-        words = script.split()
-        short_phrases = [word.rstrip() for word in words]
+        # Split the script into phrases, not words
+        phrases = re.split(r'(?<=\.)\s+|, |; |: |\? |\! |\(|\)', script)
+        short_phrases = [phrase.strip() for phrase in phrases if phrase.strip()]
 
         captions = []
         total_duration = 0
         for i, phrase in enumerate(short_phrases):
-            caption_duration = .3
+            # Adjust caption_duration based on the length of the phrase
+            caption_duration = 0.1 * len(phrase.split()) + 1
             start_time = total_duration
             end_time = start_time + caption_duration
             caption = TextClip(phrase, fontsize=60, color='white', align='center', bg_color="black", font="Nunito-ExtraBold.ttf")
