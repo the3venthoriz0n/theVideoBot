@@ -1,6 +1,5 @@
 import os, openai, requests, re, shutil, textwrap, subprocess
 from moviepy.editor import * # import everything from moviepy
-# from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
 project_prompt = input("Enter your video prompt: ") #prompt users for input
@@ -101,6 +100,13 @@ def upper_camel_case(input_str): # format any input string into upperCamelCaseTe
     return upper_camel_case_str
 
 
+def download_video_file(url, save_path): # this code is not called and does not run
+    response = requests.get(url, stream=True)
+
+    with open(save_path, "wb") as f:
+        response.raw.decode_content = True
+        shutil.copyfileobj(response.raw, f)
+
 def create_video(prompt):
     script, keywords = generate_video_script(prompt)
     print(f"Generated script:\n{script}")
@@ -132,7 +138,7 @@ def create_video(prompt):
             if video_url:
                 break
 
-        if video_url: #this code does not run 
+        if video_url: #this code does not run?
             video_name = f"scene_{idx + 1}.mp4"
             save_path = os.path.join(video_folder, video_name)
             download_video_file(video_url, save_path)
@@ -159,7 +165,7 @@ def create_video(prompt):
             captions.append(caption)
             total_duration += caption_duration
 
-        clip_duration = total_duration / len(video_clips)
+        clip_duration = total_duration / len(video_clips) # set audio length to
         
         def resize_clip(clip, size=(720, 1280)): #this is a nested function
             aspect_ratio = clip.size[0] / clip.size[1]
@@ -178,22 +184,39 @@ def create_video(prompt):
             cropped_clip = clip.crop(x1=crop_x, y1=crop_y, x2=crop_x + new_width, y2=crop_y + new_height)
             return cropped_clip.fx(vfx.resize, width=size[0], height=size[1])
 
+
+        def add_audio(inClip):
+            print("Adding audio to video...")
+            # Set the directory path
+            dir_path = "The music/"
+            # Get a list of all files in the directory
+            files = os.listdir(dir_path)
+
+            if files: #if files exist
+                # loading audio file
+                audioclip = AudioFileClip(dir_path + files[0]).subclip(0, 5)
+            else:
+                print("Directory is empty")
+            
+            # for file in files: #list all FILES in directory
+            #     if os.path.isfile(os.path.join(dir_path, file)):
+            #         print(file)
+
+            # adding audio to the video clip
+            outWAudio= inClip.set_audio(audioclip)
+            print("Audio is complete!")
+            return outWAudio
+
+
         resized_video_clips = [resize_clip(clip).subclip(0, clip_duration) for clip in video_clips]
         final_video = concatenate_videoclips(resized_video_clips, method="compose")
-
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
         final_video_with_captions.write_videofile((upper_camel_case(project_prompt)+".mp4"), codec="libx264", audio_codec="aac", audio=False)
+        add_audio(final_video_with_captions) #add audio to video?
 
-        print("Video creation complete! Check the file in " + video_folder)
+        print("Video creation complete!")
     else:
         print("No valid video URLs found for any of the script sentences.")
 
-def download_video_file(url, save_path): # this code is not called and does not run
-    response = requests.get(url, stream=True)
 
-    with open(save_path, "wb") as f:
-        response.raw.decode_content = True
-        shutil.copyfileobj(response.raw, f)
-
-# project_prompt = input("Enter your video prompt: ")
 create_video(project_prompt)
