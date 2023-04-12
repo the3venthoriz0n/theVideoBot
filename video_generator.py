@@ -6,6 +6,11 @@ import shutil
 import textwrap
 from moviepy.editor import *
 
+
+project_prompt = input("Enter your video prompt: ") #prompt users for input
+
+#--API---
+
 # Set your API keys, make a file called api_key.txt and paste api keys
 with open('api_key.txt', 'r') as f:
     OPENAI_API_KEY = f.readline().strip()
@@ -38,6 +43,9 @@ def test_pexels_search(keywords):
             print(f"Keyword '{keyword}' found video: {video_url}")
         else:
             print(f"Keyword '{keyword}' did not find any video.")
+
+
+#---Video Creation
 
 def generate_video_script(prompt):
     if prompt in video_script_cache:
@@ -74,13 +82,24 @@ def generate_video_script(prompt):
     video_script_cache[prompt] = (video_script, keywords)
     return video_script, keywords
 
+
+def upper_camel_case(input_str): # format any input string into upperCamelCaseText
+    # Split the string into words
+    words = input_str.split()
+
+    # Capitalize the first letter of each word and join them together
+    upper_camel_case_str = ''.join([word.capitalize() for word in words])
+
+    return upper_camel_case_str
+
+
 def create_video(prompt):
     script, keywords = generate_video_script(prompt)
     print(f"Generated script:\n{script}")
     print(f"Generated keywords:\n{', '.join(keywords)}")
 
     test_pexels_search(keywords)
-    video_folder = "generated_videos"
+    video_folder = "generated_videos" #this is current save path
     if os.path.exists(video_folder):
         shutil.rmtree(video_folder)
     os.makedirs(video_folder)
@@ -105,7 +124,7 @@ def create_video(prompt):
             if video_url:
                 break
 
-        if video_url:
+        if video_url: #this code does not run 
             video_name = f"scene_{idx + 1}.mp4"
             save_path = os.path.join(video_folder, video_name)
             download_video_file(video_url, save_path)
@@ -131,7 +150,7 @@ def create_video(prompt):
 
         clip_duration = total_duration / len(video_clips)
         
-        def resize_clip(clip, size=(720, 1280)):
+        def resize_clip(clip, size=(720, 1280)): #this is a nested function
             aspect_ratio = clip.size[0] / clip.size[1]
             target_aspect_ratio = size[0] / size[1]
 
@@ -152,18 +171,18 @@ def create_video(prompt):
         final_video = concatenate_videoclips(resized_video_clips, method="compose")
 
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
-        final_video_with_captions.write_videofile("final_video.mp4", codec="libx264", audio_codec="aac", audio=False)
+        final_video_with_captions.write_videofile((upper_camel_case(project_prompt)+".mp4"), codec="libx264", audio_codec="aac", audio=False)
 
-        print("Video creation complete! Check the file in ." + video_folder)
+        print("Video creation complete! Check the file in " + video_folder)
     else:
         print("No valid video URLs found for any of the script sentences.")
 
-def download_video_file(url, save_path):
+def download_video_file(url, save_path): # this code is not called and does not run
     response = requests.get(url, stream=True)
 
     with open(save_path, "wb") as f:
         response.raw.decode_content = True
         shutil.copyfileobj(response.raw, f)
 
-project_prompt = input("Enter your video prompt: ")
+# project_prompt = input("Enter your video prompt: ")
 create_video(project_prompt)
