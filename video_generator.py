@@ -11,6 +11,7 @@ project_prompt = input("Enter your video prompt: ") #prompt users for input
 with open('api_key.txt', 'r') as f:
     OPENAI_API_KEY = f.readline().strip()
     PEXELS_API_KEY = f.readline().strip()
+    PIXABAY_API_KEY = f.readline().strip()
 
 # Configure the OpenAI API client
 openai.api_key = OPENAI_API_KEY
@@ -19,6 +20,12 @@ openai.api_key = OPENAI_API_KEY
 video_script_cache = {}
 
 def get_stock_video(keyword):
+    video_url = get_stock_video_pexels(keyword)
+    if video_url is None:
+        video_url = get_stock_video_pixabay(keyword)
+    return video_url
+
+def get_stock_video_pexels(keyword):
     pexels_url = "https://api.pexels.com/videos/search"
     headers = {"Authorization": PEXELS_API_KEY}
     params = {"query": keyword, "per_page": 5}
@@ -27,7 +34,26 @@ def get_stock_video(keyword):
     data = response.json()
 
     if data and "videos" in data and data["videos"]:
-        video_url = data["videos"][0]["video_files"][0]["link"]
+        video = random.choice(data["videos"])
+        video_url = video["video_files"][0]["link"]
+        return video_url
+
+    return None
+
+def get_stock_video_pixabay(keyword):
+    pixabay_url = "https://pixabay.com/api/videos/"
+    params = {
+        "key": PIXABAY_API_KEY,
+        "q": keyword,
+        "per_page": 5,
+    }
+
+    response = requests.get(pixabay_url, params=params)
+    data = response.json()
+
+    if data and "hits" in data and data["hits"]:
+        video = random.choice(data["hits"])
+        video_url = video["videos"]["medium"]["url"]
         return video_url
 
     return None
@@ -48,9 +74,9 @@ def generate_video_script(prompt):
         return video_script_cache[prompt]
 
     modified_prompt = (
-        f"Please generate an entertaining and engaging short form video script (the video needs to render out to less than 60 seconds) about '{prompt}'. "
-        f"Then, provide a list of 5 vague nouns that will return me with good stock b roll footage "
-        f"Separate the script and the keywords with a line break.\n\n"
+        f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. End with a call to subscribe for more content"
+        f"Then, Please provide a list of 5 versatile and captivating nouns that can be used to search for engaging stock videos across various topics. These nouns should be general enough to yield interesting results when used in a stock video API search, while still being visually appealing and relevant to a diverse range of subjects. Make sure to separate the nouns with spaces so that multiple nouns are not percieved as one."
+        f"Separate the script and the keywords with a line break, do not add subscribe to the list of keywords.\n\n"
         f"Script:\n"
     )
     response = openai.Completion.create(
@@ -59,7 +85,7 @@ def generate_video_script(prompt):
         max_tokens=800,
         n=1,
         stop=None,
-        temperature=0.3,
+        temperature=0.9,
     )
 
     response_text = response.choices[0].text.strip()
@@ -126,9 +152,10 @@ def create_video(prompt):
     for idx, sentence in enumerate(sentences):
         video_url = None
         while video_url is None and keywords:
+        while video_url is None and keywords:
             keyword = keywords.pop(0)
             attempts = 0
-            while attempts < 5:
+            while attempts < 10:
                 candidate_video_url = get_stock_video(keyword)
                 if candidate_video_url and candidate_video_url not in used_video_urls:
                     video_url = candidate_video_url
@@ -166,7 +193,7 @@ def create_video(prompt):
         captions = []
         total_duration = 0
         for i, caption_text in enumerate(captions_text):
-            caption_duration = 0.1 * len(caption_text.split()) + 1
+            caption_duration = 0.1 * len(caption_text.split()) + .5
             start_time = total_duration
             end_time = start_time + caption_duration
 
