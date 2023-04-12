@@ -9,6 +9,7 @@ from moviepy.editor import *
 with open('api_key.txt', 'r') as f:
     OPENAI_API_KEY = f.readline().strip()
     PEXELS_API_KEY = f.readline().strip()
+    PIXABAY_API_KEY = f.readline().strip()
 
 # Configure the OpenAI API client
 openai.api_key = OPENAI_API_KEY
