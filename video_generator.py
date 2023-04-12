@@ -1,19 +1,12 @@
-import os
-import openai
-import requests
-import re
-import shutil
-import textwrap
-from moviepy.editor import *
-from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
-import subprocess
+import os, openai, requests, re, shutil, textwrap, subprocess
+from moviepy.editor import * # import everything from moviepy
+# from moviepy.editor import VideoFileClip, AudioFileClip, concatenate_videoclips
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
 project_prompt = input("Enter your video prompt: ") #prompt users for input
 
 #--API---
 
-#it is 12:44PM LATEST VERSION
 # Set your API keys, make a file called api_key.txt and paste api keys
 with open('api_key.txt', 'r') as f:
     OPENAI_API_KEY = f.readline().strip()
