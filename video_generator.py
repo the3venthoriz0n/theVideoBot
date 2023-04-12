@@ -148,6 +148,14 @@ def create_video(prompt):
         max_words_per_caption = 3
         captions_text = split_into_phrases(script, max_words_per_caption)
 
+
+
+
+
+
+
+
+
         captions = []
         total_duration = 0
         for i, caption_text in enumerate(captions_text):
@@ -160,6 +168,20 @@ def create_video(prompt):
 
             captions.append(caption)
             total_duration += caption_duration
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         clip_duration = total_duration / len(video_clips)
         
