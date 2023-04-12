@@ -152,7 +152,6 @@ def create_video(prompt):
     for idx, sentence in enumerate(sentences):
         video_url = None
         while video_url is None and keywords:
-        while video_url is None and keywords:
             keyword = keywords.pop(0)
             attempts = 0
             while attempts < 10:
