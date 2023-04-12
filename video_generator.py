@@ -10,7 +10,7 @@ import subprocess
 from moviepy.video.io.VideoFileClip import VideoFileClip
 
 
-
+#its 2:04 pm
 #it is 12:44PM LATEST VERSION
 # Set your API keys, make a file called api_key.txt and paste api keys
 with open('api_key.txt', 'r') as f:
