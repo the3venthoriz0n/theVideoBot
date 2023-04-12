@@ -44,8 +44,8 @@ def generate_video_script(prompt):
         return video_script_cache[prompt]
 
     modified_prompt = (
-        f"Please generate an entertaining and informative video script (60 seconds or less) about '{prompt}'. "
-        f"Then, provide a list of 5 general nouns that will return me with good stock b roll footage "
+        f"Please generate a concise, entertaining and informative video script (60 seconds or less) about '{prompt}'. "
+        f"Then, provide a list of 5 vague nouns that will return me with good stock b roll footage "
         f"Separate the script and the keywords with a line break.\n\n"
         f"Script:\n"
     )
@@ -55,7 +55,7 @@ def generate_video_script(prompt):
         max_tokens=800,
         n=1,
         stop=None,
-        temperature=0.6,
+        temperature=0.3,
     )
 
     response_text = response.choices[0].text.strip()
@@ -167,7 +167,7 @@ def create_video(prompt):
         final_video = concatenate_videoclips(resized_video_clips, method="compose")
 
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
-        final_video_with_captions.write_videofile("final_video.mp4", codec="libx264", audio_codec="aac")
+        final_video_with_captions.write_videofile("final_video.mp4", codec="libx264", audio_codec="aac", audio=False)
 
         print("Video creation complete! Check the final_video.mp4 file.")
     else:
