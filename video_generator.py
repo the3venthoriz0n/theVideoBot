@@ -155,6 +155,14 @@ def create_video(prompt):
         max_words_per_caption = 3
         captions_text = split_into_phrases(script, max_words_per_caption)
 
+
+
+
+
+
+
+
+
         captions = []
         total_duration = 0
         for i, caption_text in enumerate(captions_text):
