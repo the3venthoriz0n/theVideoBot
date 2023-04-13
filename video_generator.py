@@ -153,8 +153,8 @@ def format_script(scriptWPrompt): # TODO re-write this function, it's whack
 
 def generate_video_script_full(prompt): # this function determines what generates the script
     
-    return format_script(gen_script_davinci(prompt)) # Use old prompt generator
-    #return format_script(gen_script_gpt(prompt)) # Use GPT as prompt generator
+    #return format_script(gen_script_davinci(prompt)) # Use old prompt generator
+    return format_script(gen_script_gpt(prompt)) # Use GPT as prompt generator
 
 
 def upper_camel_case(input_str): # format any input string into upperCamelCaseText
