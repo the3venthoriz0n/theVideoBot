@@ -1,5 +1,4 @@
-"Generate an entertaining and engaging short form video script that NEEDS to be 400 words long, the script MUST BE 400 words long about '{prompt}' You MUST make the last words in the last sentence of the video script be ' subscribe for more'. You MUST make the last words in the last sentence of the video script be ' subscribe for more'. You MUST start the script with an interesting question related to '{prompt}' " you MUST ALWAYS start the script with an interesting question related to '{prompt}'
-"Then, always provide a list of 5 vague nouns that will return me with good stock b roll footage "
+"please follow this prompt very carefully, Generate an entertaining and engaging short form video script, Please, This is a requirement, that NEEDS to be 325 words long about'{prompt}' This is a requirement, You MUST make the last words in the last sentence of the video script be " subscribe for more" but before the Vague nouns for stock b roll footage. This is a requirement, You MUST start the script with an interesting question related to '{prompt}' 
+"Then, after the script you MUST provide a list of 5 vague nouns that will return me with good stock b roll footage "
 "Separate the script and the keywords with a line break."
 "Script:
-  
