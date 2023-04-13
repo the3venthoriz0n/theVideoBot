@@ -8,15 +8,14 @@ from moviepy.video.io.VideoFileClip import VideoFileClip
 #from pydub import AudioSegment
 
 '''
-Welcome to our shitty project and always remember you can put a nice dress on an ugly bitch
+Welcome to our shitty project and always remember you can put a nice dress on an ugly gal!
 
 '''
+
 project_prompt = input("Enter your video prompt: ") #prompt users for input
 
-#--API---
-
-# Set your API keys, make a file called api_key.txt and paste api keys
-with open('api_key.txt', 'r') as f:
+#--API Init---
+with open('api_key.txt', 'r') as f: # Set your API keys, make a file called api_key.txt and paste api keys
     OPENAI_API_KEY = f.readline().strip()
     PEXELS_API_KEY = f.readline().strip()
     PIXABAY_API_KEY = f.readline().strip()
@@ -24,8 +23,8 @@ with open('api_key.txt', 'r') as f:
 # Configure the OpenAI API client
 openai.api_key = OPENAI_API_KEY
 
-# Cache for video scripts
-video_script_cache = {}
+
+#---Stock Video---
 
 def get_stock_video_pexels(keyword):
     pexels_url = "https://api.pexels.com/videos/search"
@@ -79,9 +78,28 @@ def test_pexels_search(keywords):
         else:
             print(f"Keyword '{keyword}' did not find any video.")
 
-#---Video Creation
 
-def generate_video_script(prompt):
+# ---SCRIPT Creation Via OpenAI
+
+# Cache for video scripts
+video_script_cache = {}
+
+def gen_script_gpt(prompt): # This function generates scripts with gpt
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You Generate Video Titles for Youtube"}, # This is how the bot behaves
+            {"role": "user", "content": prompt},
+        ]
+    )
+    result = ''
+    for choice in response.choices:
+        result += choice.message.content
+
+    print(result)
+    return result,prompt
+
+def gen_script_davinci(prompt): # This is the old method of generating video scripts
     if prompt in video_script_cache:
         return video_script_cache[prompt]
 
@@ -102,6 +120,12 @@ def generate_video_script(prompt):
     )
 
     response_text = response.choices[0].text.strip()
+    return response_text,prompt
+
+def format_script(scriptWPrompt): # This formats the script and generates keywords
+
+    response_text = scriptWPrompt[0] # input is a tuple, this is first item of list. ("this is", "a", "tuple")
+    prompt = scriptWPrompt[1]
 
     # Find the index of the last line break
     last_line_break_index = response_text.rfind('\n')
@@ -109,11 +133,11 @@ def generate_video_script(prompt):
     if last_line_break_index != -1:
         # Extract the script and keywords after the last line break
         video_script = response_text[:last_line_break_index].strip()
-        keywords = response_text[last_line_break_index:].strip().split(', ') #TODO fix the keyword generation, stack etc.
+        # TODO fix the keyword generation, stack etc.
+        keywords = response_text[last_line_break_index:].strip().split(', ')
     else:
         video_script = response_text
         keywords = []
-
 
     # Find the index of the "Keywords:" heading
     keywords_index = response_text.find("Keywords:")
@@ -121,13 +145,20 @@ def generate_video_script(prompt):
     if keywords_index != -1:
         # Extract the script and keywords after the "Keywords:" heading
         video_script = response_text[:keywords_index].strip()
-        keywords = response_text[keywords_index + len("Keywords:"):].strip().split(", ")
+        keywords = response_text[keywords_index +
+                                 len("Keywords:"):].strip().split(", ")
     else:
         video_script = response_text
         keywords = []
 
     video_script_cache[prompt] = (video_script, keywords)
     return video_script, keywords
+
+
+def generate_video_script_full(prompt): # this function determines what generates the script
+    
+    #return format_script(gen_script_davinci(prompt)) # Use old prompt generator
+    return format_script(gen_script_gpt(prompt)) # Use GPT as prompt generator
 
 
 def upper_camel_case(input_str): # format any input string into upperCamelCaseText
@@ -147,8 +178,12 @@ def download_video_file(url, save_path): # this code is not called and does not 
         response.raw.decode_content = True
         shutil.copyfileobj(response.raw, f)
 
+
+# ---Video Creation
+
 def create_video(prompt):
-    script, keywords = generate_video_script(prompt)
+    #script, keywords = generate_video_script(prompt)
+    script, keywords = generate_video_script_full(prompt)
     print(f"Generated script:\n{script}")
     print(f"Generated keywords:\n{', '.join(keywords)}")
 
