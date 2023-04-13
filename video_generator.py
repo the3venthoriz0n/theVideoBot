@@ -1,11 +1,7 @@
-
-import random
-import os, openai, requests, re, shutil, textwrap, subprocess
-#import pyttsx3
-import random, os, openai, requests, re, shutil, textwrap, subprocess
+import random, os, openai, requests, re, shutil
 from moviepy.editor import * # import everything from moviepy
 from moviepy.video.io.VideoFileClip import VideoFileClip
-#from pydub import AudioSegment
+
 
 '''
 Welcome to our shitty project and always remember you can put a nice dress on an ugly gal!
@@ -84,7 +80,7 @@ def test_pexels_search(keywords):
 # Cache for video scripts
 video_script_cache = {}
 
-def gen_script_gpt(prompt): # This function generates scripts with gpt
+def gen_script_gpt(prompt): # TODO write another gpt role to generate keywords
 
     if prompt in video_script_cache:
         return video_script_cache[prompt]
@@ -131,7 +127,7 @@ def gen_script_davinci(prompt): # This is the old method of generating video scr
     response_text = response.choices[0].text.strip()
     return response_text,prompt
 
-def format_script(scriptWPrompt): # TODO re-write this function, it's whack
+def format_script(scriptWPrompt): # TODO re-write this function, it's a little whack
 
     response_text = scriptWPrompt[0] # input is a tuple, this is first item of list. ("this is", "a", "tuple")
     prompt = scriptWPrompt[1]
@@ -148,13 +144,7 @@ def format_script(scriptWPrompt): # TODO re-write this function, it's whack
         keywords = []
 
     video_script_cache[prompt] = (video_script, keywords)
-    return video_script_cache[prompt]
-
-
-def generate_video_script_full(prompt): # this function determines what generates the script
-    
-    #return format_script(gen_script_davinci(prompt)) # Use old prompt generator
-    return format_script(gen_script_gpt(prompt)) # Use GPT as prompt generator
+    return video_script,keywords # return tuple
 
 
 def upper_camel_case(input_str): # format any input string into upperCamelCaseText
@@ -177,11 +167,15 @@ def download_video_file(url, save_path): # this code is not called and does not 
 
 # ---Video Creation
 
-def create_video(prompt):
-    #script, keywords = generate_video_script(prompt)
-    script, keywords = generate_video_script_full(prompt)
-    print(f"\nGenerated script:\n{script}")
-    print(f"\nGenerated keywords:\n{', '.join(keywords)}")
+def create_video(prompt): #TODO Clean up, maybe break into separate parts?
+    gptOutput = format_script(gen_script_gpt(prompt)) # returns a tuple
+    #davinciOutput = format_script(gen_script_davinci(prompt))
+
+    script = gptOutput[0] # first index in tuple
+    keywords = gptOutput[1] # second index
+
+    print(f"\n---SCRIPT---\n\n{script}")
+    print(f"\n---KEYWORDS---\n\n{', '.join(keywords)}")
 
     test_pexels_search(keywords)
     video_folder = "generated_videos" 
@@ -193,7 +187,7 @@ def create_video(prompt):
     video_clips = []
     used_video_urls = set()
 
-    for idx, sentence in enumerate(sentences):#hello
+    for idx, sentence in enumerate(sentences): # TODO clean this messy code up
         video_url = None
         while video_url is None and keywords:
             keyword = keywords.pop(0)
@@ -209,7 +203,7 @@ def create_video(prompt):
             if video_url:
                 break
 
-        if video_url: #this code does not run?
+        if video_url: 
             video_name = f"scene_{idx + 1}.mp4"
             save_path = os.path.join(video_folder, video_name)
             download_video_file(video_url, save_path)
@@ -258,7 +252,7 @@ def create_video(prompt):
             cropped_clip = clip.crop(x1=crop_x, y1=crop_y, x2=crop_x + new_width, y2=crop_y + new_height)
             return cropped_clip.fx(vfx.resize, width=size[0], height=size[1])
         
-        def format_duration(duration):
+        def format_duration(duration): # Format a messy duration into H:M:S
             hours = int(duration / 3600)
             minutes = int((duration % 3600) / 60)
             seconds = int(duration % 60)
@@ -269,7 +263,7 @@ def create_video(prompt):
 
         def add_audio(videoclip):
 
-            audioLength = format_duration(total_duration) #format audio duration to H:M:S
+            audioLength = format_duration(total_duration) # format audio duration to H:M:S
             print("Adding audio to video...")
         
             dir_path = "The music/" # Set the path for music
@@ -292,11 +286,12 @@ def create_video(prompt):
         resized_video_clips = [resize_clip(clip).subclip(0, clip_duration) for clip in video_clips]
         final_video = concatenate_videoclips(resized_video_clips, method="compose")
         final_video_with_captions = CompositeVideoClip([final_video] + captions, size=(720, 1280)).set_duration(total_duration)
-        add_audio(final_video_with_captions) #add audio to video
+        add_audio(final_video_with_captions) # add audio to video
 
         print("Video creation complete!")
     else:
         print("No valid video URLs found for any of the script sentences.")
+    return
 
 
 create_video(project_prompt)

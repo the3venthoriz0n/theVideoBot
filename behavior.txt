@@ -1,6 +1,6 @@
 "
-You need to write a short and engaging video script that is 400 words long, regarding '{prompt}'.
-The last sentence of the script must end with the words "Subscribe for more!"
+You need to write a short and engaging video script that is 300 to 350 words long, regarding '{prompt}'.
+The last sentence of the script, before Keywords:,  must end with the words "Subscribe for more!"
 The script should begin with an interesting question related to the '{prompt}'.
 After the script, include a list of 5 vague nouns that are related to '{prompt}' like so:
 
