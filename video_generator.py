@@ -85,19 +85,20 @@ def generate_video_script(prompt):
     if prompt in video_script_cache:
         return video_script_cache[prompt]
 
-    modified_prompt = (
-        f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. the last words in the last sentence should ALWAYS be 'subscribe for more'."
-        f"Then, please ALWAYS provide a list of 5 versatile and captivating nouns that can be used to search for engaging stock videos across various topics. These nouns should be general enough to yield interesting results when used in a stock video API search, while still being visually appealing and relevant to a diverse range of subjects. Make sure to separate the nouns with ',' so that multiple nouns are not percieved as one."
-        f"Separate the script and the keywords with a line break always give the Keyword the title 'Keywords', do not add subscribe to the list of keywords.\n\n"
-        f"Script:\n"
-    )
+    # Read the template from the file
+    with open("template.txt", "r") as file:
+        template = file.read()
+
+    # Replace the placeholder with the user-defined prompt
+    modified_prompt = template.format(prompt=prompt)
+
     response = openai.Completion.create(
         engine="text-davinci-002",
         prompt=modified_prompt,
         max_tokens=800,
         n=1,
         stop=None,
-        temperature=0.9,
+        temperature=0.5,
     )
 
     response_text = response.choices[0].text.strip()
