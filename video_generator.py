@@ -85,11 +85,22 @@ def test_pexels_search(keywords):
 video_script_cache = {}
 
 def gen_script_gpt(prompt): # This function generates scripts with gpt
+
+    if prompt in video_script_cache:
+        return video_script_cache[prompt]
+
+    # Read the template from the file
+    with open("template.txt", "r") as file:
+        template = file.read()
+
+    # Replace the placeholder with the user-defined prompt
+    modified_prompt = template.format(prompt=prompt)
+
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You Generate Video Scripts for Youtube"}, # This is how the bot behaves
-            {"role": "user", "content": prompt},
+            {"role": "system", "content": template}, # This is how the bot behaves
+            {"role": "user", "content": modified_prompt},
         ]
     )
     result = ''
@@ -104,7 +115,7 @@ def gen_script_davinci(prompt): # This is the old method of generating video scr
         return video_script_cache[prompt]
 
     # Read the template from the file
-    with open("template.txt", "r") as file:
+    with open("template.txt", "r") as file: # TODO rename template.txt to botBehavior.txt or something
         template = file.read()
 
     # Replace the placeholder with the user-defined prompt
@@ -122,37 +133,24 @@ def gen_script_davinci(prompt): # This is the old method of generating video scr
     response_text = response.choices[0].text.strip()
     return response_text,prompt
 
-def format_script(scriptWPrompt): # This formats the script and generates keywords
+def format_script(scriptWPrompt): # TODO re-write this function, it's whack
 
     response_text = scriptWPrompt[0] # input is a tuple, this is first item of list. ("this is", "a", "tuple")
     prompt = scriptWPrompt[1]
 
-    # Find the index of the last line break
-    last_line_break_index = response_text.rfind('\n')
-
-    if last_line_break_index != -1:
-        # Extract the script and keywords after the last line break
-        video_script = response_text[:last_line_break_index].strip()
-        # TODO fix the keyword generation, stack etc.
-        keywords = response_text[last_line_break_index:].strip().split(', ')
-    else:
-        video_script = response_text
-        keywords = []
-
     # Find the index of the "Keywords:" heading
-    keywords_index = response_text.find("Keywords:")
+    keywords_index = response_text.find("Keywords:") # this returns an index
 
-    if keywords_index != -1:
+    if keywords_index != -1: # if the index is non negative
         # Extract the script and keywords after the "Keywords:" heading
         video_script = response_text[:keywords_index].strip()
-        keywords = response_text[keywords_index +
-                                 len("Keywords:"):].strip().split(", ")
-    else:
+        keywords = response_text[keywords_index + len("Keywords:"):].strip().split(", ")
+    else: #otherwise there are no keywords
         video_script = response_text
         keywords = []
 
     video_script_cache[prompt] = (video_script, keywords)
-    return video_script, keywords
+    return video_script_cache[prompt]
 
 
 def generate_video_script_full(prompt): # this function determines what generates the script
@@ -184,8 +182,8 @@ def download_video_file(url, save_path): # this code is not called and does not 
 def create_video(prompt):
     #script, keywords = generate_video_script(prompt)
     script, keywords = generate_video_script_full(prompt)
-    print(f"Generated script:\n{script}")
-    print(f"Generated keywords:\n{', '.join(keywords)}")
+    print(f"\nGenerated script:\n{script}")
+    print(f"\nGenerated keywords:\n{', '.join(keywords)}")
 
     test_pexels_search(keywords)
     video_folder = "generated_videos" 
