@@ -3,7 +3,7 @@ generated_videos*
 final_video*
 *.mp4
 vidbot*
-*.txt
+template.txt
 
 # VSCode
 .vscode/*
