@@ -224,11 +224,11 @@ def create_video(prompt): #TODO Clean up, maybe break into separate parts?
         caption_width = int(video_width * 0.9)  # Adjust this value to set the maximum width for the captions
 
         for i, caption_text in enumerate(captions_text):
-            caption_duration = 0.1 * len(caption_text.split()) + .8
+            caption_duration = 0.1 * len(caption_text.split()) + .8 # What does this mean? 8 words per minute?
             start_time = total_duration
             end_time = start_time + caption_duration
 
-            caption = TextClip(caption_text, fontsize=68, color='rgb(255, 213, 0)', align='center', bg_color='rgba(0, 0, 0, 0.55)', font="Nunito-ExtraBold.ttf", size=(caption_width, None), method="caption") #please keep this note 237, 205, 0
+            caption = TextClip(caption_text, fontsize=68, color='rgb(255, 213, 0)', align='center', bg_color='rgba(0, 0, 0, 0.55)', font="Nunito-ExtraBold.ttf", size=(caption_width, None), method="caption") # please keep this note 237, 205, 0
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
 
             captions.append(caption)
