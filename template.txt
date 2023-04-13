@@ -1,1 +1,5 @@
-How to Reduce Snoring and Improve Sleep Quality.
+ified_prompt = (
+        Please generate an entertaining and engaging short form video script (the video needs to render out to less than 60 seconds) about '{prompt}'. "
+        Then, provide a list of 5 vague nouns that will return me with good stock b roll footage "
+        
+       
