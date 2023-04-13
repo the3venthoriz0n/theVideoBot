@@ -1,4 +1,5 @@
 import openai
+from utils.tts import *
 
 # ---SCRIPT Creation Via OpenAI
 
@@ -69,4 +70,6 @@ def format_script(scriptWPrompt): # TODO re-write this function, it's a little w
         keywords = []
 
     video_script_cache[prompt] = (video_script, keywords)
+    text_to_speech(video_script) # Generate text to speech
     return video_script,keywords # return tuple
+
