@@ -208,7 +208,6 @@ def create_video(prompt):
 
             captions.append(caption)
             total_duration += caption_duration
-
         clip_duration = total_duration / len(video_clips) # set audio length to
         
         def resize_clip(clip, size=(720, 1280)): #this is a nested function
