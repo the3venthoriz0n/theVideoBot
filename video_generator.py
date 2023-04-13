@@ -79,7 +79,6 @@ def test_pexels_search(keywords):
         else:
             print(f"Keyword '{keyword}' did not find any video.")
 
-
 #---Video Creation
 
 def generate_video_script(prompt):
@@ -199,7 +198,7 @@ def create_video(prompt):
         caption_width = int(video_width * 0.9)  # Adjust this value to set the maximum width for the captions
 
         for i, caption_text in enumerate(captions_text):
-            caption_duration = 0.1 * len(caption_text.split()) + .5
+            caption_duration = 0.1 * len(caption_text.split()) + .8
             start_time = total_duration
             end_time = start_time + caption_duration
 
