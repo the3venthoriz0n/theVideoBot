@@ -88,7 +88,7 @@ def gen_script_gpt(prompt): # This function generates scripts with gpt
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You Generate Video Titles for Youtube"}, # This is how the bot behaves
+            {"role": "system", "content": "You Generate Video Scripts for Youtube"}, # This is how the bot behaves
             {"role": "user", "content": prompt},
         ]
     )
