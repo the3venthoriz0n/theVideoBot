@@ -3,6 +3,8 @@ from moviepy.editor import *  # import everything from moviepy
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from utils.get_stock_video import *
 from utils.script_generator import *
+from utils.tts import *
+
 
 
 def upper_camel_case(input_str):  # format any input string into upperCamelCaseText
