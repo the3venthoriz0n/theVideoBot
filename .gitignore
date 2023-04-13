@@ -1,3 +1,5 @@
+# Custom names to ignore
+
 api_key*
 generated_videos*
 final_video*
