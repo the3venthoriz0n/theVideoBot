@@ -1,3 +1,4 @@
+
 import random
 import os, openai, requests, re, shutil, textwrap, subprocess
 #import pyttsx3
@@ -86,7 +87,7 @@ def generate_video_script(prompt):
         return video_script_cache[prompt]
 
     modified_prompt = (
-        f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. the last words in the last sentence should always be 'subscribe for more'."
+        f"Craft a captivating, informative, and emotional video script using this:'{prompt}' as a base. Have an expressive, positive tone. the last words in the last sentence should ALWAYS be 'subscribe for more'."
         f"Then, please ALWAYS provide a list of 5 versatile and captivating nouns that can be used to search for engaging stock videos across various topics. These nouns should be general enough to yield interesting results when used in a stock video API search, while still being visually appealing and relevant to a diverse range of subjects. Make sure to separate the nouns with ',' so that multiple nouns are not percieved as one."
         f"Separate the script and the keywords with a line break always give the Keyword the title 'Keywords', do not add subscribe to the list of keywords.\n\n"
         f"Script:\n"
@@ -202,7 +203,7 @@ def create_video(prompt):
             start_time = total_duration
             end_time = start_time + caption_duration
 
-            caption = TextClip(caption_text, fontsize=69, color='rgb(237, 205, 0)', align='center', bg_color='rgba(0, 0, 0, 0.55)', font="Nunito-ExtraBold.ttf", size=(caption_width, None), method="caption")
+            caption = TextClip(caption_text, fontsize=68, color='rgb(255, 213, 0)', align='center', bg_color='rgba(0, 0, 0, 0.55)', font="Nunito-ExtraBold.ttf", size=(caption_width, None), method="caption") #please keep this note 237, 205, 0
             caption = caption.set_position(('center', 'center')).set_duration(caption_duration).set_start(start_time)
 
             captions.append(caption)
@@ -252,7 +253,7 @@ def create_video(prompt):
 
             new_audioclip = CompositeAudioClip([audioclip])
             videoclip.audio = new_audioclip
-            videoclip = videoclip.volumex(.25)  # Volume factor, 20 percent volume
+            videoclip = videoclip.volumex(.25)  # Volume factor, 25 percent volume
             videoclip.write_videofile((upper_camel_case(project_prompt)+".mp4"))
 
             print("Audio is complete!")
