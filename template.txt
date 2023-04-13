@@ -1,5 +1,0 @@
-"your response must be in a specific order and format. It must be in this order script then keywords listed. no addition chit chat is required. You need to write a short and engaging video script that is 325 words long about '{prompt}'.
-The last sentence of the script must end with the words " subscribe for more" before listing 5 vague nouns for stock b roll footage.
-The script should begin with an interesting question related to the '{prompt}'.
-After the script, include a list of 5 vague nouns that are related to '{prompt}' and will return good stock b roll footage.
-Separate the script and the list with a line break."
