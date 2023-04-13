@@ -84,25 +84,22 @@ def test_pexels_search(keywords):
 # Cache for video scripts
 video_script_cache = {}
 
-def gen_script_gpt(prompt):
-
+def gen_script_gpt(prompt): # This function generates scripts with gpt
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "system", "content": "You Generate Video Titles for Youtube"},
+            {"role": "system", "content": "You Generate Video Titles for Youtube"}, # This is how the bot behaves
             {"role": "user", "content": prompt},
         ]
     )
-
     result = ''
     for choice in response.choices:
         result += choice.message.content
 
     print(result)
-
     return result,prompt
 
-def gen_script_davinci(prompt):
+def gen_script_davinci(prompt): # This is the old method of generating video scripts
     if prompt in video_script_cache:
         return video_script_cache[prompt]
 
@@ -123,12 +120,11 @@ def gen_script_davinci(prompt):
     )
 
     response_text = response.choices[0].text.strip()
-
     return response_text,prompt
 
-def format_script(scriptWPrompt):
+def format_script(scriptWPrompt): # This formats the script and generates keywords
 
-    response_text = scriptWPrompt[0] # input is a tuple, this is first item of list
+    response_text = scriptWPrompt[0] # input is a tuple, this is first item of list. ("this is", "a", "tuple")
     prompt = scriptWPrompt[1]
 
     # Find the index of the last line break
@@ -159,57 +155,10 @@ def format_script(scriptWPrompt):
     return video_script, keywords
 
 
-def generate_video_script_full(prompt):
+def generate_video_script_full(prompt): # this function determines what generates the script
     
-    return format_script(gen_script_gpt(prompt))
-
-# def generate_video_script(prompt):
-#     if prompt in video_script_cache:
-#         return video_script_cache[prompt]
-
-#     # Read the template from the file
-#     with open("template.txt", "r") as file:
-#         template = file.read()
-
-#     # Replace the placeholder with the user-defined prompt
-#     modified_prompt = template.format(prompt=prompt)
-
-#     response = openai.Completion.create(
-#         engine="text-davinci-002",
-#         prompt=modified_prompt,
-#         max_tokens=800,
-#         n=1,
-#         stop=None,
-#         temperature=0.5,
-#     )
-
-#     response_text = response.choices[0].text.strip()
-
-#     # Find the index of the last line break
-#     last_line_break_index = response_text.rfind('\n')
-
-#     if last_line_break_index != -1:
-#         # Extract the script and keywords after the last line break
-#         video_script = response_text[:last_line_break_index].strip()
-#         keywords = response_text[last_line_break_index:].strip().split(', ') #TODO fix the keyword generation, stack etc.
-#     else:
-#         video_script = response_text
-#         keywords = []
-
-
-#     # Find the index of the "Keywords:" heading
-#     keywords_index = response_text.find("Keywords:")
-
-#     if keywords_index != -1:
-#         # Extract the script and keywords after the "Keywords:" heading
-#         video_script = response_text[:keywords_index].strip()
-#         keywords = response_text[keywords_index + len("Keywords:"):].strip().split(", ")
-#     else:
-#         video_script = response_text
-#         keywords = []
-
-#     video_script_cache[prompt] = (video_script, keywords)
-#     return video_script, keywords
+    #return format_script(gen_script_davinci(prompt)) # Use old prompt generator
+    return format_script(gen_script_gpt(prompt)) # Use GPT as prompt generator
 
 
 def upper_camel_case(input_str): # format any input string into upperCamelCaseText
