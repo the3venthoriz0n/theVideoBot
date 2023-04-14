@@ -36,12 +36,14 @@ def get_stock_video_pexels(keyword):
 
     if data and "videos" in data and data["videos"]:
         video = random.choice(data["videos"])
-        video_url = video["video_files"][0]["link"]
+        # Choose the highest quality video file
+        video_url = sorted(video["video_files"], key=lambda x: x["width"] * x["height"], reverse=True)[0]["link"]
         print(f"Pexels: Found video for keyword '{keyword}'")
         return video_url
 
     print(f"Pexels: No video found for keyword '{keyword}'")
     return None
+
 
 def get_stock_video_pixabay(keyword):
     pixabay_url = "https://pixabay.com/api/videos/"
@@ -56,12 +58,15 @@ def get_stock_video_pixabay(keyword):
 
     if data and "hits" in data and data["hits"]:
         video = random.choice(data["hits"])
-        video_url = video["videos"]["medium"]["url"]
+        # Choose the highest quality video file
+        video_files = [video["videos"]["tiny"], video["videos"]["small"], video["videos"]["medium"], video["videos"]["large"]]
+        video_url = sorted(video_files, key=lambda x: x["width"] * x["height"], reverse=True)[0]["url"]
         print(f"Pixabay: Found video for keyword '{keyword}'")
         return video_url
 
     print(f"Pixabay: No video found for keyword '{keyword}'")
     return None
+
 
 def get_stock_video(keyword):
     video_url = get_stock_video_pexels(keyword)
@@ -74,9 +79,9 @@ def test_pexels_search(keywords):
     for keyword in keywords:
         video_url = get_stock_video(keyword)
         if video_url:
-            print(f"Keyword '{keyword}' found video: {video_url}")
+            print(f"Keyword '{keyword.strip()}' found video: {video_url}")
         else:
-            print(f"Keyword '{keyword}' did not find any video.")
+            print(f"Keyword '{keyword.strip()}' did not find any video.")
 
 #---Video Creation
 
@@ -96,7 +101,6 @@ def generate_video_script(prompt):
         prompt=modified_prompt,
         max_tokens=800,
         n=1,
-        stop=None,
         temperature=0.5,
     )
 
@@ -120,7 +124,7 @@ def generate_video_script(prompt):
     if keywords_index != -1:
         # Extract the script and keywords after the "Keywords:" heading
         video_script = response_text[:keywords_index].strip()
-        keywords = response_text[keywords_index + len("Keywords:"):].strip().split(", ")
+        keywords = [k.strip() for k in response_text[last_line_break_index:].strip().split(',')]
     else:
         video_script = response_text
         keywords = []
