@@ -1,9 +1,14 @@
+# Custom names to ignore
+
 api_key*
 generated_videos*
 final_video*
 *.mp4
+*TEMP*.mp3
+*.wav
 vidbot*
-*.txt
+template.txt
+*ffmpeg*
 
 # VSCode
 .vscode/*
