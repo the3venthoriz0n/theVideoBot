@@ -1,4 +1,3 @@
-
 import random
 import os, openai, requests, re, shutil, textwrap, subprocess
 #import pyttsx3
