@@ -1,6 +1,5 @@
 import pyttsx3, sys
-sys.path.append('venv\Lib')
-
+#import tortoise
 
 def text_to_speech(text):
 
@@ -18,3 +17,22 @@ def text_to_speech(text):
     engine.runAndWait()
 
 #text_to_speech("HELLO SLUT")
+
+
+
+
+# def tortoise():
+
+
+#     # Initialize the Tortoise object
+#     tortoise = Tortoise()
+
+#     # Set the voice and language
+#     tortoise.voice = "Microsoft Zira Desktop - English (United States)"
+#     tortoise.language = "en-US"
+
+#     # Convert text to speech
+#     tortoise.say("Hello, world!")
+
+#     # Release the resources
+#     tortoise.close()

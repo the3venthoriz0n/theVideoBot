@@ -6,5 +6,5 @@ nltk
 moviepy
 pyttsx3
 pydub
-ffmpeg
-ffprobe
+#ffmpeg
+#ffprobe
