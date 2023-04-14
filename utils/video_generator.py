@@ -1,25 +1,15 @@
-import random,os,re,shutil
-from moviepy.editor import *  # import everything from moviepy
+import os,re,shutil
+from moviepy.editor import *
 from moviepy.video.io.VideoFileClip import VideoFileClip
 from utils.get_stock_video import *
 from utils.script_generator import *
 from utils.tts import *
-
-
-
-def upper_camel_case(input_str):  # format any input string into upperCamelCaseText
-    # Split the string into words
-    words = input_str.split()
-
-    # Capitalize the first letter of each word and join them together
-    upper_camel_case_str = ''.join([word.capitalize() for word in words])
-
-    return upper_camel_case_str
+from utils.overlay_audio import *
 
 
 # ---Video Creation
 
-def create_video(prompt):  # TODO Clean up, maybe break into separate parts?
+def create_video(prompt):  #TODO get words per minute
     gptOutput = format_script(gen_script_gpt(prompt))  # returns a tuple
     # davinciOutput = format_script(gen_script_davinci(prompt))
 
@@ -30,7 +20,7 @@ def create_video(prompt):  # TODO Clean up, maybe break into separate parts?
     print(f"\n---KEYWORDS---\n\n{', '.join(keywords)}")
 
     test_pexels_search(keywords)
-    video_folder = "generated_videos"
+    video_folder = "generated_videos" #TODO make this a hidden folder
     if os.path.exists(video_folder):
         shutil.rmtree(video_folder)
     os.makedirs(video_folder)
@@ -39,7 +29,7 @@ def create_video(prompt):  # TODO Clean up, maybe break into separate parts?
     video_clips = []
     used_video_urls = set()
 
-    for idx, sentence in enumerate(sentences):  # TODO clean this messy code up
+    for idx, sentence in enumerate(sentences):  # TODO this does not rotate through keywords?
         video_url = None
         while video_url is None and keywords:
             keyword = keywords.pop(0)
@@ -78,11 +68,12 @@ def create_video(prompt):  # TODO Clean up, maybe break into separate parts?
         caption_width = int(video_width * 0.9)
 
         for i, caption_text in enumerate(captions_text):
-            # What does this mean? 8 words per minute?
+
             caption_duration = 0.1 * len(caption_text.split()) + .8
             start_time = total_duration
             end_time = start_time + caption_duration
 
+            #TODO add font folder
             caption = TextClip(caption_text, fontsize=68, color='rgb(255, 213, 0)', align='center', bg_color='rgba(0, 0, 0, 0.55)',
                                font="Nunito-ExtraBold.ttf", size=(caption_width, None), method="caption")  # please keep this note 237, 205, 0
             caption = caption.set_position(('center', 'center')).set_duration(
@@ -111,49 +102,14 @@ def create_video(prompt):  # TODO Clean up, maybe break into separate parts?
                 x1=crop_x, y1=crop_y, x2=crop_x + new_width, y2=crop_y + new_height)
             return cropped_clip.fx(vfx.resize, width=size[0], height=size[1])
 
-        def format_duration(duration):  # Format a messy duration into H:M:S
-            hours = int(duration / 3600)
-            minutes = int((duration % 3600) / 60)
-            seconds = int(duration % 60)
-            padding = int(1) + seconds
-
-            return f"{hours:02}:{minutes:02}:{padding:02}"
-
-        def add_audio(videoclip):
-
-            # format audio duration to H:M:S
-            audioLength = format_duration(total_duration)
-            print("Adding audio to video...")
-
-            dir_path = "audio/"  # Set the path for music
-            # Get a list of all files in the directory
-            files = os.listdir(dir_path)
-
-            if files:  # If files exist
-                random_file = random.choice(files)  # pick a random file in dir
-                # choose that file, set to length of video
-                audioclip = AudioFileClip(
-                    dir_path + random_file).set_duration(audioLength)
-            else:
-                print("Directory is empty")
-
-            new_audioclip = CompositeAudioClip([audioclip])
-            videoclip.audio = new_audioclip
-            # Volume factor, 25 percent volume
-            videoclip = videoclip.volumex(.25)
-            videoclip.write_videofile(
-                (upper_camel_case(prompt)+".mp4"))
-
-            print("Audio is complete!")
-            return
-
         resized_video_clips = [resize_clip(clip).subclip(
             0, clip_duration) for clip in video_clips]
         final_video = concatenate_videoclips(
             resized_video_clips, method="compose")
         final_video_with_captions = CompositeVideoClip(
             [final_video] + captions, size=(720, 1280)).set_duration(total_duration)
-        add_audio(final_video_with_captions)  # add audio to video
+        add_audio(final_video_with_captions,total_duration,prompt)  # combine audio and add video
+
 
         print("Video creation complete!")
     else:

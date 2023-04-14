@@ -5,6 +5,7 @@ generated_videos*
 final_video*
 *.mp4
 *TEMP*.mp3
+*.wav
 vidbot*
 template.txt
 
