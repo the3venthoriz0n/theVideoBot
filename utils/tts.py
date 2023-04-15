@@ -1,4 +1,4 @@
-import pyttsx3, sys
+import pyttsx3, sys, re, time
 #import tortoise
 
 def text_to_speech(text):
@@ -10,6 +10,13 @@ def text_to_speech(text):
     engine.setProperty('rate', 185)  # Speed of speech in words per minute
     voices = engine.getProperty('voices')
     engine.setProperty('voice', voices[1].id)  # 1 is female voice 0 is a bro
+
+    # Split the text into sentences and add a small pause after each period
+    sentences = re.split('(?<=[.!?]) +', text)
+    for sentence in sentences:
+        engine.say(sentence)
+        engine.runAndWait()
+        time.sleep(0.4)  # Add a small pause after each sentence
 
     # Convert text to speech using pyttsx3 and save as WAV file
     text = text #set input as the text
