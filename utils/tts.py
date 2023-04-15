@@ -7,7 +7,7 @@ def text_to_speech(text):
     engine = pyttsx3.init()
 
     # Set properties for the engine
-    engine.setProperty('rate', 185)  # Speed of speech in words per minute
+    engine.setProperty('rate', 172)  # Speed of speech in words per minute
     voices = engine.getProperty('voices')
     engine.setProperty('voice', voices[1].id)  # 1 is female voice 0 is a bro
 
