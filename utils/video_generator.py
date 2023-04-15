@@ -81,10 +81,7 @@ def create_video(prompt):  #TODO get words per minute
         caption_width = int(video_width * 0.9)
 
         for i, caption_text in enumerate(captions_text):
-            # Increase caption_duration by 0.5 if there's a period in the caption
-            extra_duration = 0.5 if '.' in caption_text else 0
-
-            caption_duration = 0.1 * len(caption_text.split()) + 0.8 + extra_duration
+            caption_duration = 0.1 * len(caption_text.split()) + 1
             start_time = total_duration
             end_time = start_time + caption_duration
 
