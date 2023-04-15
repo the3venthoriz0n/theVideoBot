@@ -58,6 +58,10 @@ def add_audio(videoclip,duration,prompt):
     videoclip = videoclip.volumex(.75)
     videoclip.write_videofile(
         (upper_camel_case(prompt)+".mp4")) #TODO make output dir for final videos
+    
+    os.remove('ttsOut.wav') #deletes the used tts audio file after the audio has been added to video
+    os.remove('finalAudio.mp3') #deletes the last video audio
+    
     print("Audio is complete!")
     return
 
