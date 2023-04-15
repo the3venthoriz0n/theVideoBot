@@ -23,10 +23,6 @@ def text_to_speech(text):
     engine.save_to_file(text, 'audio/ttsOut.wav')
     engine.runAndWait()
 
-#text_to_speech("HELLO SLUT")
-
-
-
 
 # def tortoise():
 
