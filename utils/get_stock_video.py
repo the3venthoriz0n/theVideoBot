@@ -26,7 +26,7 @@ def download_video_file(url, save_path):
 def get_stock_video_pexels(keyword):
     pexels_url = "https://api.pexels.com/videos/search"
     headers = {"Authorization": PEXELS_API_KEY}
-    params = {"query": keyword, "per_page": 5}
+    params = {"query": keyword, "per_page": 5, "min_width": 1920, "min_height": 1080}
 
     response = requests.get(pexels_url, headers=headers, params=params)
     data = response.json()
@@ -47,6 +47,8 @@ def get_stock_video_pixabay(keyword):
         "key": PIXABAY_API_KEY,
         "q": keyword,
         "per_page": 5,
+        "min_width": 1920,
+        "min_height": 1080,
     }
 
     response = requests.get(pixabay_url, params=params)
@@ -54,12 +56,13 @@ def get_stock_video_pixabay(keyword):
 
     if data and "hits" in data and data["hits"]:
         video = random.choice(data["hits"])
-        video_url = video["videos"]["medium"]["url"]
+        video_url = video["videos"]["large"]["url"]
         print(f"Pixabay: Found video for keyword '{keyword}'")
         return video_url
 
     print(f"Pixabay: No video found for keyword '{keyword}'")
     return None
+
 
 
 def get_stock_video(keyword):

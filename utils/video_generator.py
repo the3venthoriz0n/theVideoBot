@@ -90,8 +90,7 @@ def create_video(prompt):
         if vidAudio:
             add_audio(final_video_with_captions, total_duration, prompt)
         else:
-            final_video_with_captions.write_videofile(f"{'-'.join(prompt.split())}.mp4", codec="libx264", audio_codec="aac", audio=False)
-
+            final_video_with_captions.write_videofile(f"{'-'.join(prompt.replace(':', '_').split())}.mp4", codec="libx264", audio_codec="aac", audio=False)
         print("Video creation complete!")
     else:
         print("No valid video URLs found for any of the script sentences.")
