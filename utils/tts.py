@@ -16,7 +16,6 @@ def text_to_speech(text):
     engine.save_to_file(text, 'audio/ttsOut.wav')
     engine.runAndWait()
 
-
 # def tortoise():
 
 #     # Initialize the Tortoise object

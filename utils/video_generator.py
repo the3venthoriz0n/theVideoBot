@@ -42,15 +42,20 @@ def create_video(prompt):
                 attempts += 1
             if video_url:
                 break
-        
+
         if video_url:
             video_name = f"scene_{idx + 1}.mp4"
             save_path = os.path.join(video_folder, video_name)
             download_video_file(video_url, save_path)
-            clip = VideoFileClip(save_path)
-            
-            resized_cropped_clip = resize_and_crop_clip(clip)
-            video_clips.append(resized_cropped_clip)
+
+            # Add try-except block to handle invalid video files
+            try:
+                clip = VideoFileClip(save_path)
+                resized_cropped_clip = resize_and_crop_clip(clip)
+                video_clips.append(resized_cropped_clip)
+            except Exception as e:
+                print(f"Error while processing the video file {save_path}: {e}")
+                continue
 
     if video_clips:
         def split_into_phrases(text, max_words):
