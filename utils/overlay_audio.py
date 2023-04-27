@@ -38,7 +38,7 @@ def add_audio(videoclip,duration,prompt):
         random_file = random.choice(musicFiles)  # pick a random file in dir
         
         musicAudio = AudioSegment.from_file(musicDir + random_file, format="mp3")
-        ttsAudio = AudioSegment.from_file("audio/ttsOut.wav", format="wav")
+        ttsAudio = AudioSegment.from_file("audio/ttsOut.mp3", format="mp3")
 
         musicAudio = musicAudio - 15.0 # decrease audio by 10 db
         ttsAudio = ttsAudio - 1.0 # decrease volume 5 db

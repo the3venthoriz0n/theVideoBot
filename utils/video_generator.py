@@ -91,7 +91,7 @@ def create_video(prompt):
         final_video_with_captions = CompositeVideoClip(
             [final_video] + captions, size=(720, 1280)).set_duration(total_duration)
 
-        vidAudio = False
+        vidAudio = True
         if vidAudio:
             add_audio(final_video_with_captions, total_duration, prompt)
         else:
